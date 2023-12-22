@@ -1,5 +1,6 @@
 package dto;
 
+import entity.OrderDetail;
 import lombok.*;
 
 import java.util.List;
@@ -14,6 +15,6 @@ public class OrderDto {
     private String orderId;
     private String date;
     private String custId;
-    private List<OrderDetailsDto> list;
+    private List<OrderDetail> list;
 
 }

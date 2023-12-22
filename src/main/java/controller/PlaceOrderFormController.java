@@ -1,14 +1,22 @@
 package controller;
 
+import bo.BoFactory;
+import bo.custom.CustomerBo;
+import bo.custom.ItemBo;
+import bo.custom.OrderDetailBo;
+import bo.custom.OrdersBo;
+import bo.custom.impl.CustomerBoImpl;
+import bo.custom.impl.ItemBoImpl;
+import bo.custom.impl.OrderDetailBoImpl;
+import bo.custom.impl.OrdersBoImpl;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import com.sun.source.tree.Tree;
-import db.DBConnection;
+import dao.util.BoType;
 import dto.CustomerDto;
 import dto.OrderDetailsDto;
 import dto.OrderDto;
 import dto.tm.ItemDto;
-import dto.tm.OrderTm;
+import dto.tm.OrderDetailsTm;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,12 +28,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.stage.Stage;
-import model.CustomerModel;
-import model.ItemModel;
-import model.OrderModel;
-import model.impl.CustomerModelImpl;
-import model.impl.ItemModelImpl;
-import model.impl.OrderModelImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -55,7 +57,7 @@ public class PlaceOrderFormController {
     private JFXButton btdAddToCart;
 
     @FXML
-    private JFXTreeTableView<OrderTm> tblOrder;
+    private JFXTreeTableView<OrderDetailsTm> tblOrder;
 
     @FXML
     private JFXButton btnPlaceOrder;
@@ -66,10 +68,11 @@ public class PlaceOrderFormController {
     private List<ItemDto> items;
     private double tot = 0;
 
-    private CustomerModel customerModel = new CustomerModelImpl();
-    private ItemModel itemModel = new ItemModelImpl();
-    private OrderModel orderModel = new OrderModelImpl();
-    private ObservableList<OrderTm> tmList = FXCollections.observableArrayList();
+    private CustomerBo customerBo = BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
+    private OrdersBo ordersBo = BoFactory.getInstance().getBo(BoType.ORDER);
+    private OrderDetailBo orderDetailBo = BoFactory.getInstance().getBo(BoType.ORDER_DETAIL);
+    private ObservableList<OrderDetailsTm> tmList = FXCollections.observableArrayList();
 
 
 
@@ -105,7 +108,7 @@ public class PlaceOrderFormController {
 
     private void loadItemCodes() {
         try {
-            items = itemModel.allItems();
+            items = itemBo.allItems();
             ObservableList<String> list = FXCollections.observableArrayList();
             for (ItemDto dto:items) {
                 list.add(dto.getCode());
@@ -119,7 +122,7 @@ public class PlaceOrderFormController {
 
     private void loadCustomerIds() {
         try {
-            customers = customerModel.allCustomers();
+            customers = customerBo.allCustomers();
             ObservableList<String> list = FXCollections.observableArrayList();
             for (CustomerDto dto : customers) {
                 list.add(dto.getId());
@@ -132,12 +135,12 @@ public class PlaceOrderFormController {
 
     public void backButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)tblOrder.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/DashBoardForm.fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/DashBoardForm.fxml"))));
     }
 
     public void generateId(){
         try {
-            OrderDto dto = orderModel.lastOrder();
+            OrderDto dto = ordersBo.lastOrder();
             if (dto!=null){
                 String id = dto.getOrderId();
                 int num = Integer.parseInt(id.split("[D]")[1]);
@@ -154,7 +157,7 @@ public class PlaceOrderFormController {
         if (!tmList.isEmpty()){
 //            orderModel.saveOrder()
             List<OrderDetailsDto> list = new ArrayList<>();
-            for (OrderTm tm:tmList) {
+            for (OrderDetailsTm tm:tmList) {
                 list.add(new OrderDetailsDto(
                         lblOrderId.getText(),
                         tm.getCode(),
@@ -165,12 +168,12 @@ public class PlaceOrderFormController {
 //        if (!tmList.isEmpty()){
             boolean isSaved = false;
             try {
-                isSaved = orderModel.saveOrder(new OrderDto(
+                isSaved = (ordersBo.saveOrder(new OrderDto(
                         lblOrderId.getText(),
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString(),
                         cmbCustId.getValue().toString(),
-                        list
-                ));
+                        null
+                )) && (orderDetailBo.saveOrderDetails(list)));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -191,9 +194,9 @@ public class PlaceOrderFormController {
                     new Alert(Alert.AlertType.ERROR, "Out of Stocks!").show();
                 }else{
                     try {
-                        double amount = itemModel.getItem(cmbItemCode.getValue().toString()).getPrice() * Integer.parseInt(txtBuyingQty.getText());
+                        double amount = itemBo.getItem(cmbItemCode.getValue().toString()).getPrice() * Integer.parseInt(txtBuyingQty.getText());
                         JFXButton btn= new JFXButton("Delete");
-                        OrderTm tm = new OrderTm(
+                        OrderDetailsTm tm = new OrderDetailsTm(
                                 cmbItemCode.getValue().toString(),
                                 txtItemDesc.getText(),
                                 Integer.parseInt(txtBuyingQty.getText()),
@@ -211,7 +214,7 @@ public class PlaceOrderFormController {
                         boolean isExist = false;
 
 
-                        for(OrderTm order : tmList) {
+                        for(OrderDetailsTm order : tmList) {
                             if(order.getCode().equals(tm.getCode())){
                                 order.setQty(order.getQty()+tm.getQty());
                                 order.setAmount(order.getAmount()+tm.getAmount());
@@ -225,7 +228,7 @@ public class PlaceOrderFormController {
                             tot+=tm.getAmount();
                         }
 
-                        RecursiveTreeItem<OrderTm> treeItem = new RecursiveTreeItem<OrderTm>(tmList, RecursiveTreeObject::getChildren);
+                        RecursiveTreeItem<OrderDetailsTm> treeItem = new RecursiveTreeItem<OrderDetailsTm>(tmList, RecursiveTreeObject::getChildren);
                         tblOrder.setRoot(treeItem);
                         tblOrder.setShowRoot(false);
 

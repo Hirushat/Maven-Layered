@@ -16,6 +16,7 @@ import javafx.util.Duration;
 
 import java.awt.*;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -27,12 +28,23 @@ public class DashboardFormController {
     public Label lblDate;
     public Label lblTime;
     public JFXButton btnPlaceOrder;
+    public Button btnOrderDetails;
 
     public void initialize(){
         calculateTime();
+        calculateDate();
     }
 
+    private void calculateDate() {
+        Timeline dateLine = new Timeline(new KeyFrame(
+                Duration.ZERO,
+                actionEvent -> lblDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))),
+                new KeyFrame(Duration.hours(24))
+        );
 
+        dateLine.setCycleCount(Animation.INDEFINITE);
+        dateLine.play();
+    }
     private void calculateTime() {
        Timeline timeLine = new Timeline(new KeyFrame(
                 Duration.ZERO,
@@ -44,22 +56,29 @@ public class DashboardFormController {
 
     public void customerButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)pane.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/CustomerForm.fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/CustomerForm.fxml"))));
         stage.setTitle("Customer Form");
         stage.show();
     }
 
     public void ItemButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)pane.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/ItemForm.fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ItemForm.fxml"))));
         stage.setTitle("Item Form");
         stage.show();
     }
 
     public void placeOrderButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)pane.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/PlaceOrderForm.fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/PlaceOrderForm.fxml"))));
         stage.setTitle("Place Order Form");
+        stage.show();
+    }
+
+    public void orderDetailsButtonOnAction(ActionEvent actionEvent) throws IOException {
+        Stage stage = (Stage)pane.getScene().getWindow();
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/OrderDetailsForm.fxml"))));
+        stage.setTitle("Order Details Form");
         stage.show();
     }
 }

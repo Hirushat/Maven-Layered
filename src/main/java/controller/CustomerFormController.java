@@ -1,8 +1,11 @@
 package controller;
 
+import bo.BoFactory;
+import bo.custom.CustomerBo;
+import bo.custom.impl.CustomerBoImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import db.DBConnection;
+import dao.util.BoType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,8 +17,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import dto.CustomerDto;
 import dto.tm.CustomerTm;
-import model.CustomerModel;
-import model.impl.CustomerModelImpl;
+import dao.custom.CustomerDao;
+import dao.custom.impl.CustomerDaoImpl;
 
 import java.io.IOException;
 import java.sql.*;
@@ -63,7 +66,7 @@ public class CustomerFormController{
     @FXML
     private JFXButton btnReload;
 
-    private CustomerModel customerModel = new CustomerModelImpl();
+    private CustomerBo customerBo = (CustomerBo) BoFactory.getInstance().getBo(BoType.CUSTOMER);
 
     public void initialize(){
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -93,7 +96,7 @@ public class CustomerFormController{
         ObservableList<CustomerTm> tmList = FXCollections.observableArrayList();
 
         try {
-            List<CustomerDto> dtoList = customerModel.allCustomers();
+            List<CustomerDto> dtoList = customerBo.allCustomers();
 
             for(CustomerDto dto: dtoList){
                 Button btn = new Button("Delete");
@@ -122,7 +125,7 @@ public class CustomerFormController{
     }
     public void deleteCustomer(String id){
         try {
-            boolean isDeleted = customerModel.deleteCustomer(id);
+            boolean isDeleted = customerBo.deleteCustomer(id);
             if (isDeleted){
                 new Alert(Alert.AlertType.INFORMATION,"Customer Deleted");
                 loadCustomerTable();
@@ -136,7 +139,7 @@ public class CustomerFormController{
     }
     public void updateButtonOnAction(javafx.event.ActionEvent actionEvent) {
         try {
-            boolean isSaved = customerModel.updateCustomer(new CustomerDto(txtId.getText(),
+            boolean isSaved = customerBo.updateCustomer(new CustomerDto(txtId.getText(),
                     txtName.getText(),
                     txtAddress.getText(),
                     Double.parseDouble(txtSalary.getText())
@@ -167,7 +170,7 @@ public class CustomerFormController{
 
     public void saveButtonOnAction(ActionEvent actionEvent) {
         try {
-            boolean isSaved = customerModel.saveCustomer(new CustomerDto(txtId.getText(),
+            boolean isSaved = customerBo.saveCustomer(new CustomerDto(txtId.getText(),
                     txtName.getText(),
                     txtAddress.getText(),
                     Double.parseDouble(txtSalary.getText())
@@ -187,6 +190,6 @@ public class CustomerFormController{
 
     public void backButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)tblCustomer.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/DashBoardForm.fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/DashBoardForm.fxml"))));
     }
 }

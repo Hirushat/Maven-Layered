@@ -68,11 +68,10 @@
             <JFXTreeTableView fx:id="tblItem" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <columns>
                   <TreeTableColumn fx:id="colCode" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" text="Item Code" />
-                  <TreeTableColumn maxWidth="19.0" minWidth="-1.0" prefWidth="15.0" text="Description" />
                   <TreeTableColumn fx:id="colDesc" prefWidth="269.0" text="Item Description" />
                   <TreeTableColumn fx:id="colPrice" prefWidth="91.0" text="Unit Price" />
-                  <TreeTableColumn fx:id="colQty" maxWidth="274.0" minWidth="115.0" prefWidth="115.0" text="Qty On Hand" />
-                  <TreeTableColumn fx:id="colOption" prefWidth="85.0" text="Option" />
+                  <TreeTableColumn fx:id="colQty" maxWidth="274.0" minWidth="115.0" prefWidth="122.0" text="Qty On Hand" />
+                  <TreeTableColumn fx:id="colOption" prefWidth="99.0" text="Option" />
                </columns>
             </JFXTreeTableView>
             <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#backButtonOnAction" prefHeight="25.0" prefWidth="67.0" text="Button">

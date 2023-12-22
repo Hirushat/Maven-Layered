@@ -1,11 +1,18 @@
 package controller;
 
+import bo.BoFactory;
+import bo.custom.CustomerBo;
+import bo.custom.ItemBo;
+import bo.custom.impl.CustomerBoImpl;
+import bo.custom.impl.ItemBoImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dao.util.BoType;
 import db.DBConnection;
+import dto.CustomerDto;
 import dto.tm.ItemDto;
 
 import dto.tm.ItemTm;
@@ -22,8 +29,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.stage.Stage;
-import model.ItemModel;
-import model.impl.ItemModelImpl;
+import dao.custom.ItemDao;
+import dao.custom.impl.ItemDaoImpl;
 
 import java.io.IOException;
 import java.sql.*;
@@ -59,7 +66,7 @@ public class ItemFormController {
     @FXML
     private TreeTableColumn<?, ?> colOption;
 
-    ItemModel itemModel = new ItemModelImpl();
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
 
     public void initialize(){
         colCode.setCellValueFactory(new TreeItemPropertyValueFactory<>("code"));
@@ -100,7 +107,7 @@ public class ItemFormController {
     private void loadItemTable() {
         ObservableList<ItemTm> tmList = FXCollections.observableArrayList();
         try {
-            List<ItemDto> dtoList = itemModel.allItems();
+            List<ItemDto> dtoList = itemBo.allItems();
 
             for(ItemDto dto: dtoList){
                 JFXButton btn = new JFXButton("Delete");
@@ -132,7 +139,7 @@ public class ItemFormController {
     private void deleteItem(String code) {
         boolean isDeleted = false;
         try {
-            isDeleted = itemModel.deleteItem(code);
+            isDeleted = itemBo.deleteItem(code);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -147,7 +154,7 @@ public class ItemFormController {
     @FXML
     void backButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)tblItem.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/DashBoardForm.fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/DashBoardForm.fxml"))));
     }
 
 
