@@ -1,6 +1,5 @@
 package controller;
 
-import bo.BoFactory;
 import bo.custom.CustomerBo;
 import bo.custom.impl.CustomerBoImpl;
 import com.jfoenix.controls.JFXButton;
@@ -66,7 +65,7 @@ public class CustomerFormController{
     @FXML
     private JFXButton btnReload;
 
-    private CustomerBo customerBo = (CustomerBo) BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private CustomerBo customerBo = new CustomerBoImpl();
 
     public void initialize(){
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));

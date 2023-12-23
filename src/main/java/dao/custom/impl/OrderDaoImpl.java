@@ -2,10 +2,10 @@ package dao.custom.impl;
 
 import dao.util.CrudUtil;
 import db.DBConnection;
-import dto.OrderDto;
+import dto.OrderDetailsDto;
 import dao.custom.OrderDetailsDao;
 import dao.custom.OrderDao;
-import entity.Customer;
+import dto.OrderDto;
 import entity.Orders;
 
 import java.sql.Connection;
@@ -21,28 +21,6 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public boolean save(Orders entity) throws SQLException {
-        Connection connection = DBConnection.getInstance().getConnection();
-
-        try {
-            connection.setAutoCommit(false);
-
-            String sql = "INSERT INTO orders VALUES(?,?,?)";
-            PreparedStatement pstm = connection.prepareStatement(sql);
-            pstm.setString(1,entity.getId());
-            pstm.setString(2,entity.getDate());
-            pstm.setString(3,entity.getCustomerId());
-
-            if (pstm.executeUpdate()>0){
-                    connection.commit();
-                    return true;
-
-            }
-        } catch (SQLException e) {
-            connection.rollback();
-            e.printStackTrace();
-        } finally{
-            connection.setAutoCommit(true);
-        }
         return false;
     }
 
@@ -54,13 +32,12 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public boolean delete(String value) throws SQLException {
         String sql = "DELETE FROM orders WHERE id = ? ";
-        /*PreparedStatement pstm;
+        PreparedStatement pstm;
 
         pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        pstm.setString(1,value);
+        pstm.setString(1, value);
 
-        return  pstm.executeUpdate()>0;*/
-        return CrudUtil.execute(sql, value);
+        return pstm.executeUpdate() > 0;
     }
 
     @Override
@@ -68,8 +45,9 @@ public class OrderDaoImpl implements OrderDao {
         List<Orders> list = new ArrayList<>();
 
         String sql = "SELECT * FROM orders";
-        ResultSet resultSet = CrudUtil.execute(sql);
-        while (resultSet.next()){
+        PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
+        ResultSet resultSet = pstm.executeQuery();
+        while (resultSet.next()) {
             list.add(new Orders(
                     resultSet.getString(1),
                     resultSet.getString(2),
@@ -80,17 +58,43 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Orders lastOrder() throws SQLException {
+    public OrderDto lastOrder() throws SQLException {
         String sql = "SELECT * FROM orders ORDER BY id DESC LIMIT 1";
-        //PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
+       // PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
         ResultSet resultSet = CrudUtil.execute(sql);
-        if (resultSet.next()){
-            return new Orders(
+
+        if (resultSet.next()) {
+            return new OrderDto(
                     resultSet.getString(1),
                     resultSet.getString(2),
-                    resultSet.getString(3)
+                    resultSet.getString(3),
+                    null
             );
         }
         return null;
+    }
+
+    @Override
+    public boolean saveOrder(OrderDto dto) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        try {
+            connection.setAutoCommit(false);
+
+            String sql = "INSERT INTO orders VALUES(?,?,?)";
+
+            if (CrudUtil.execute(sql, dto.getOrderId(), dto.getDate(), dto.getCustId())){
+                boolean isDetailSaved = orderDetailsDao.saveOrderDetails(dto.getList());
+                if (isDetailSaved){
+                    connection.commit();
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            connection.rollback();
+            e.printStackTrace();
+        } finally{
+            connection.setAutoCommit(true);
+        }
+        return false;
     }
 }

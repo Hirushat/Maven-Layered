@@ -16,18 +16,18 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public ItemDto getItem(String code) throws SQLException {
         String sql = "SELECT * FROM item WHERE code = ? ";
-        /*PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
-       pstm.setString(1,code);*/
-       ResultSet rst = CrudUtil.execute(sql,code);
-       if(rst.next()){
-           return new ItemDto(
-                   rst.getString(1),
-                   rst.getString(2),
-                   rst.getDouble(3),
-                   rst.getInt(4)
-           );
-       }
-       return null;
+        PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
+        pstm.setString(1,code);
+        ResultSet rst = pstm.executeQuery();
+        if(rst.next()){
+            return new ItemDto(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getDouble(3),
+                    rst.getInt(4)
+            );
+        }
+        return null;
     }
 
 
@@ -65,18 +65,17 @@ public class ItemDaoImpl implements ItemDao {
         /*PreparedStatement pstm;
 
         pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        pstm.setString(1,value);
+        pstm.setString(1,value);*/
 
-        return  pstm.executeUpdate()>0;*/
-        return CrudUtil.execute(sql, value);
+        return  CrudUtil.execute(sql, value);
     }
 
     @Override
     public List<Item> getAll() throws SQLException {
         List<Item> list = new ArrayList<>();
         String sql = "SELECT * FROM item";
-        //PreparedStatement pstm =  DBConnection.getInstance().getConnection().prepareStatement(sql);
-        ResultSet resultSet = CrudUtil.execute(sql);
+        PreparedStatement pstm =  DBConnection.getInstance().getConnection().prepareStatement(sql);
+        ResultSet resultSet = pstm.executeQuery();
         while (resultSet.next()){
             list.add(new Item(
                     resultSet.getString(1),

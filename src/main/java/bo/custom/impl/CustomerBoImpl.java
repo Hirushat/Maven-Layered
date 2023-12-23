@@ -1,7 +1,6 @@
 package bo.custom.impl;
 
 import bo.custom.CustomerBo;
-import dao.DaoFactory;
 import dao.custom.CustomerDao;
 import dao.custom.impl.CustomerDaoImpl;
 import dao.util.DaoType;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerBoImpl implements CustomerBo {
-    private  CustomerDao customerDao = DaoFactory.getInstance().getDao(DaoType.CUSTOMER);
+    private  CustomerDao customerDao = new CustomerDaoImpl();
     @Override
     public boolean saveCustomer(CustomerDto dto) throws SQLException {
         return customerDao.save(new Customer(
