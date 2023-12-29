@@ -29,12 +29,7 @@ public class OrdersBoImpl implements OrdersBo {
 
     @Override
     public boolean saveOrder(OrderDto dto) throws SQLException {
-        return orderDao.saveOrder(new OrderDto(
-                dto.getOrderId(),
-                dto.getDate(),
-                dto.getCustId(),
-                dto.getList()
-        ));
+        return orderDao.saveOrder(dto);
     }
 
     @Override

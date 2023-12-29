@@ -76,7 +76,9 @@ public class PlaceOrderFormController {
 
     private CustomerBo customerBo = BoFactory.getInstance().getBo(BoType.CUSTOMER);
     private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
-    private OrderDao ordersDao = DaoFactory.getInstance().getDao(DaoType.ORDER);
+
+    private OrdersBo ordersBo = BoFactory.getInstance().getBo(BoType.ORDER);
+    //private OrderDao ordersDao = DaoFactory.getInstance().getDao(DaoType.ORDER);
     private ObservableList<OrderTm> tmList = FXCollections.observableArrayList();
 
 
@@ -145,7 +147,7 @@ public class PlaceOrderFormController {
 
     public void generateId(){
         try {
-            OrderDto dto = ordersDao.lastOrder();
+            OrderDto dto = ordersBo.lastOrder();
             if (dto!=null){
                 String id = dto.getOrderId();
                 int num = Integer.parseInt(id.split("[D]")[1]);
@@ -174,7 +176,7 @@ public class PlaceOrderFormController {
 //        if (!tmList.isEmpty()){
             boolean isSaved = false;
             try {
-                isSaved = ordersDao.saveOrder(new OrderDto(
+                isSaved = ordersBo.saveOrder(new OrderDto(
                         lblOrderId.getText(),
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString(),
                         cmbCustId.getValue().toString(),
@@ -185,6 +187,14 @@ public class PlaceOrderFormController {
             }
             if (isSaved){
                 new Alert(Alert.AlertType.INFORMATION,"Order Saved!").show();
+                generateId();
+                cmbCustId.getSelectionModel().clearSelection();
+                cmbItemCode.getSelectionModel().clearSelection();
+                txtCustName.setText("");
+                txtItemDesc.setText("");
+                txtUnitPrice.setText("");
+                txtBuyingQty.setText("");
+                tmList.clear();
             }else{
                 new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
             }
