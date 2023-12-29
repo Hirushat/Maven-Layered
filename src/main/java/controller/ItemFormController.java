@@ -1,5 +1,6 @@
 package controller;
 
+import bo.BoFactory;
 import bo.custom.CustomerBo;
 import bo.custom.ItemBo;
 import bo.custom.impl.CustomerBoImpl;
@@ -65,7 +66,7 @@ public class ItemFormController {
     @FXML
     private TreeTableColumn<?, ?> colOption;
 
-    private ItemBo itemBo = new ItemBoImpl();
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
 
     public void initialize(){
         colCode.setCellValueFactory(new TreeItemPropertyValueFactory<>("code"));

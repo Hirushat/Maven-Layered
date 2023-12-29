@@ -1,6 +1,7 @@
 package bo.custom.impl;
 
 import bo.custom.ItemBo;
+import dao.DaoFactory;
 import dao.custom.ItemDao;
 import dao.custom.impl.ItemDaoImpl;
 import dao.util.DaoType;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class ItemBoImpl implements ItemBo {
 
-    private ItemDao itemDao = new ItemDaoImpl();
+    private ItemDao itemDao = DaoFactory.getInstance().getDao(DaoType.ITEM);
 
     @Override
     public boolean saveItem(ItemDto dto) throws SQLException {

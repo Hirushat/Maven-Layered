@@ -1,6 +1,7 @@
 package bo.custom.impl;
 
 import bo.custom.OrderDetailBo;
+import dao.DaoFactory;
 import dao.custom.OrderDao;
 import dao.custom.OrderDetailsDao;
 import dao.custom.impl.OrderDaoImpl;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailBoImpl implements OrderDetailBo {
-    private OrderDetailsDao orderDetailsDao = new OrderDetailsDaoImpl();
+    private OrderDetailsDao orderDetailsDao = DaoFactory.getInstance().getDao(DaoType.ORDER_DETAIL);
     @Override
     public boolean saveOrderDetails(List<OrderDetailsDto> list) throws SQLException {
         return orderDetailsDao.saveOrderDetails(list);

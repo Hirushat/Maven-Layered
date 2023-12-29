@@ -4,6 +4,9 @@ import bo.custom.impl.CustomerBoImpl;
 import bo.custom.impl.ItemBoImpl;
 import bo.custom.impl.OrderDetailBoImpl;
 import bo.custom.impl.OrdersBoImpl;
+import dao.custom.impl.CustomerDaoImpl;
+import dao.custom.impl.ItemDaoImpl;
+import dao.custom.impl.OrderDaoImpl;
 import dao.util.BoType;
 
 public class BoFactory {

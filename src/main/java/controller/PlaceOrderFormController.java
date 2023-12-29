@@ -10,6 +10,11 @@ import bo.custom.impl.OrderDetailBoImpl;
 import bo.custom.impl.OrdersBoImpl;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dao.DaoFactory;
+import dao.custom.OrderDao;
+import dao.custom.OrderDetailsDao;
+import dao.custom.impl.OrderDaoImpl;
+import dao.util.DaoType;
 import dto.CustomerDto;
 import dto.OrderDetailsDto;
 import dto.OrderDto;
@@ -69,8 +74,7 @@ public class PlaceOrderFormController {
 
     private CustomerBo customerBo = new CustomerBoImpl();
     private ItemBo itemBo = new ItemBoImpl();
-    private OrdersBo ordersBo = new OrdersBoImpl();
-    private OrderDetailBo orderDetailBo = new OrderDetailBoImpl();
+    private OrderDao ordersDao = new OrderDaoImpl();
     private ObservableList<OrderTm> tmList = FXCollections.observableArrayList();
 
 
@@ -139,7 +143,7 @@ public class PlaceOrderFormController {
 
     public void generateId(){
         try {
-            OrderDto dto = ordersBo.lastOrder();
+            OrderDto dto = ordersDao.lastOrder();
             if (dto!=null){
                 String id = dto.getOrderId();
                 int num = Integer.parseInt(id.split("[D]")[1]);
@@ -168,7 +172,7 @@ public class PlaceOrderFormController {
 //        if (!tmList.isEmpty()){
             boolean isSaved = false;
             try {
-                isSaved = ordersBo.saveOrder(new OrderDto(
+                isSaved = ordersDao.saveOrder(new OrderDto(
                         lblOrderId.getText(),
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString(),
                         cmbCustId.getValue().toString(),

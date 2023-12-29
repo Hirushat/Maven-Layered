@@ -6,13 +6,14 @@ import dao.custom.impl.CustomerDaoImpl;
 import dao.util.DaoType;
 import dto.CustomerDto;
 import entity.Customer;
-
+import dao.DaoFactory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CustomerBoImpl implements CustomerBo {
-    private  CustomerDao customerDao = new CustomerDaoImpl();
+    private  CustomerDao customerDao = DaoFactory.getInstance().getDao(DaoType.CUSTOMER);
     @Override
     public boolean saveCustomer(CustomerDto dto) throws SQLException {
         return customerDao.save(new Customer(
