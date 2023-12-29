@@ -1,6 +1,8 @@
 package dao.custom.impl;
 
+import dao.DaoFactory;
 import dao.util.CrudUtil;
+import dao.util.DaoType;
 import db.DBConnection;
 import dto.OrderDetailsDto;
 import dao.custom.OrderDetailsDao;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class OrderDaoImpl implements OrderDao {
 
-    OrderDetailsDao orderDetailsDao = new OrderDetailsDaoImpl();
+    OrderDetailsDao orderDetailsDao = DaoFactory.getInstance().getDao(DaoType.ORDER_DETAIL);
 
     @Override
     public boolean save(Orders entity) throws SQLException {

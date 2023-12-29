@@ -1,5 +1,6 @@
 package controller;
 
+import bo.BoFactory;
 import bo.custom.CustomerBo;
 import bo.custom.ItemBo;
 import bo.custom.OrderDetailBo;
@@ -14,6 +15,7 @@ import dao.DaoFactory;
 import dao.custom.OrderDao;
 import dao.custom.OrderDetailsDao;
 import dao.custom.impl.OrderDaoImpl;
+import dao.util.BoType;
 import dao.util.DaoType;
 import dto.CustomerDto;
 import dto.OrderDetailsDto;
@@ -72,9 +74,9 @@ public class PlaceOrderFormController {
     private List<ItemDto> items;
     private double tot = 0;
 
-    private CustomerBo customerBo = new CustomerBoImpl();
-    private ItemBo itemBo = new ItemBoImpl();
-    private OrderDao ordersDao = new OrderDaoImpl();
+    private CustomerBo customerBo = BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
+    private OrderDao ordersDao = DaoFactory.getInstance().getDao(DaoType.ORDER);
     private ObservableList<OrderTm> tmList = FXCollections.observableArrayList();
 
 
