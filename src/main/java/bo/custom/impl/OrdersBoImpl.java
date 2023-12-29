@@ -62,6 +62,23 @@ public class OrdersBoImpl implements OrdersBo {
     }
 
     @Override
+    public String generateId() throws SQLException {
+        try {
+            OrderDto dto = orderDao.lastOrder();
+            if (dto!=null){
+                String id = dto.getOrderId();
+                int num = Integer.parseInt(id.split("[D]")[1]);
+                num++;
+                return String.format("D%03d",num);
+            }else{
+               return "D001";
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+   /* @Override
     public OrderDto lastOrder() throws SQLException {
         String sql = "SELECT * FROM orders ORDER BY id DESC LIMIT 1";
         PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
@@ -76,5 +93,5 @@ public class OrdersBoImpl implements OrdersBo {
             );
         }
         return null;
-    }
+    }*/
 }

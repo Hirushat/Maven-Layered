@@ -11,5 +11,5 @@ public interface OrdersBo extends SuperBo {
     boolean updateOrder(OrderDto dto) throws SQLException;
     boolean deleteOrder(String id) throws SQLException;
     List<OrderDto> allOrders() throws SQLException;
-    OrderDto lastOrder() throws SQLException;
+    String generateId() throws SQLException;
 }

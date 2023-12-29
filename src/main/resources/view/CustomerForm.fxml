@@ -40,5 +40,6 @@
             </ImageView>
          </graphic>
       </JFXButton>
+      <JFXButton fx:id="btnReport" layoutX="465.0" layoutY="379.0" onAction="#reportButtonOnAction" text="Report" />
    </children>
 </AnchorPane>

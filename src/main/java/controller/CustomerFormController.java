@@ -6,6 +6,7 @@ import bo.custom.impl.CustomerBoImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import dao.util.BoType;
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,11 @@ import dto.CustomerDto;
 import dto.tm.CustomerTm;
 import dao.custom.CustomerDao;
 import dao.custom.impl.CustomerDaoImpl;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
 import java.sql.*;
@@ -27,6 +33,7 @@ import java.util.List;
 public class CustomerFormController{
 
     public JFXButton btnBack;
+    public JFXButton btnReport;
     @FXML
     private JFXTextField txtId;
 
@@ -191,5 +198,19 @@ public class CustomerFormController{
     public void backButtonOnAction(ActionEvent actionEvent) throws IOException {
         Stage stage = (Stage)tblCustomer.getScene().getWindow();
         stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/DashBoardForm.fxml"))));
+    }
+
+    public void reportButtonOnAction(ActionEvent actionEvent) {
+        try {
+            JasperDesign design = JRXmlLoader.load("src/main/resources/reports/CustomerReports.jrxml");
+            //
+            //
+            JasperReport jasperReport = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
+            JasperViewer.viewReport(jasperPrint,false);
+        } catch (JRException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
