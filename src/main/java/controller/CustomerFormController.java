@@ -132,8 +132,7 @@ public class CustomerFormController{
     }
     public void deleteCustomer(String id){
         try {
-            boolean isDeleted = customerBo.deleteCustomer(id);
-            if (isDeleted){
+            if (customerBo.deleteCustomer(id)){
                 new Alert(Alert.AlertType.INFORMATION,"Customer Deleted");
                 loadCustomerTable();
             }else{
