@@ -74,8 +74,8 @@ public class ItemDaoImpl implements ItemDao {
     public List<Item> getAll() throws SQLException {
         List<Item> list = new ArrayList<>();
         String sql = "SELECT * FROM item";
-        PreparedStatement pstm =  DBConnection.getInstance().getConnection().prepareStatement(sql);
-        ResultSet resultSet = pstm.executeQuery();
+        //PreparedStatement pstm =  DBConnection.getInstance().getConnection().prepareStatement(sql);
+        ResultSet resultSet = CrudUtil.execute(sql);
         while (resultSet.next()){
             list.add(new Item(
                     resultSet.getString(1),

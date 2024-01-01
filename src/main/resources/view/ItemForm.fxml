@@ -104,6 +104,7 @@
                   </GridPane>
                </children>
             </GridPane>
+            <JFXButton fx:id="btReport" alignment="CENTER" onAction="#ReportButtonOnAction" prefHeight="25.0" prefWidth="77.0" style="-fx-background-color: #38BA79;" text="Report" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="7" />
          </children>
       </GridPane>
    </center>

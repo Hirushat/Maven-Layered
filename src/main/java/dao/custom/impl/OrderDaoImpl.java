@@ -34,12 +34,10 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public boolean delete(String value) throws SQLException {
         String sql = "DELETE FROM orders WHERE id = ? ";
-        PreparedStatement pstm;
+       /* PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
+        pstm.setString(1, value);*/
 
-        pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        pstm.setString(1, value);
-
-        return pstm.executeUpdate() > 0;
+        return CrudUtil.execute(sql, value);
     }
 
     @Override
@@ -47,8 +45,8 @@ public class OrderDaoImpl implements OrderDao {
         List<Orders> list = new ArrayList<>();
 
         String sql = "SELECT * FROM orders";
-        PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        ResultSet resultSet = pstm.executeQuery();
+        //PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
+        ResultSet resultSet = CrudUtil.execute(sql);
         while (resultSet.next()) {
             list.add(new Orders(
                     resultSet.getString(1),

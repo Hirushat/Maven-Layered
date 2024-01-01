@@ -31,6 +31,10 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.stage.Stage;
 import dao.custom.ItemDao;
 import dao.custom.impl.ItemDaoImpl;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
 import java.sql.*;
@@ -47,6 +51,7 @@ public class ItemFormController {
     public JFXTextField txtQty;
     public JFXButton btnSearch;
     public JFXTextField txtSearch;
+    public JFXButton btReport;
 
     @FXML
     private JFXTreeTableView<ItemTm> tblItem;
@@ -241,6 +246,19 @@ public class ItemFormController {
             e.printStackTrace();
         }
 
+    }
+
+    public void ReportButtonOnAction(ActionEvent actionEvent) {
+        try {
+            JasperDesign design = JRXmlLoader.load("src/main/resources/reports/ItemReport.jrxml");
+            //
+            //
+            JasperReport jasperReport = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
+            JasperViewer.viewReport(jasperPrint,false);
+        } catch (JRException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

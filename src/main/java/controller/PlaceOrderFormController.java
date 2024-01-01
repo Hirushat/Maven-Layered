@@ -202,7 +202,7 @@ public class PlaceOrderFormController {
                     new Alert(Alert.AlertType.ERROR, "Out of Stocks!").show();
                 }else{
                     try {
-                        double amount = itemBo.getItem(cmbItemCode.getValue().toString()).getPrice() * Integer.parseInt(txtBuyingQty.getText());
+                        double amount = itemBo.getItem(itemCode).getPrice() * Integer.parseInt(txtBuyingQty.getText());
                         JFXButton btn= new JFXButton("Delete");
                         OrderTm tm = new OrderTm(
                                 cmbItemCode.getValue().toString(),
